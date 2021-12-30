@@ -252,8 +252,8 @@ function encodeToRot13(str) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return ((typeof value === 'string' || value instanceof String) && Boolean(value));
 }
 
 
@@ -281,10 +281,13 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const firstChar = value.substring(0, value.length - 1);
+  const arrLetters = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  const lastChar = value.substring(value.length - 1);
+  const arrSymbols = ['♣', '♦', '♥', '♠'];
+  return arrLetters.indexOf(firstChar) + arrSymbols.indexOf(lastChar) * 13;
 }
-
 
 module.exports = {
   concatenateStrings,
