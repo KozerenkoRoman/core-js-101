@@ -178,6 +178,7 @@ function findFirstSingleChar(str) {
   });
   return res;
 }
+
 /**
  * Returns the string representation of math interval,
  * specified by two points and include / exclude flags.
@@ -203,6 +204,7 @@ function findFirstSingleChar(str) {
 function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
   return `${(!isStartIncluded ? '(' : '[')}${a < b ? a : b}, ${b > a ? b : a}${isEndIncluded ? ']' : ')'}`;
 }
+
 /**
  * Reverse the specified string (put all chars in reverse order)
  *
@@ -285,8 +287,19 @@ function isCreditCardNumber(ccn) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(n) {
+  let digitalRoot = 0;
+
+  function getSum(num) {
+    if (num > 10) {
+      const sum = num.toString().split('').reduce((acc, curr) => +acc + +curr);
+      digitalRoot = sum;
+      getSum(sum);
+    }
+  }
+
+  getSum(n);
+  return digitalRoot;
 }
 
 
@@ -311,8 +324,23 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const close = [']', '}', ')', '>'];
+  const open = {
+    '[': ']', '{': '}', '(': ')', '<': '>',
+  };
+  const arr = str.split('');
+  const resArr = [];
+  for (let i = 0; i < arr.length; i += 1) {
+    if (Object.keys(open).includes(arr[i]) && resArr.push(arr[i]) && resArr.length === 0) {
+      return false;
+    }
+    if (close.includes(arr[i])) {
+      const idx = resArr.pop();
+      if (arr[i] !== open[idx]) return false;
+    }
+  }
+  return resArr.length === 0;
 }
 
 
@@ -336,8 +364,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -353,10 +381,23 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
-}
+function getCommonDirectoryPath(pathes) {
+  function compare(a, b) {
+    return a.length <= b.length ? a : b;
+  }
 
+  let res = '';
+  let arr = pathes.map((value) => value.slice(0, value.lastIndexOf('/') + 1));
+  for (let i = 0; i < pathes.length; i += 1) {
+    const shorted = (arr = arr.map((value) => value.slice(0, value.lastIndexOf('/') + 1))).reduce(compare);
+    if (arr.every((value) => value.includes(shorted))) {
+      res = shorted;
+      break;
+    }
+    arr = arr.map((value) => value.slice(0, value.lastIndexOf('/')));
+  }
+  return res;
+}
 
 /**
  * Returns the product of two specified matrixes.
@@ -376,8 +417,17 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const res = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    res[i] = [];
+    for (let r = 0; r < m2[0].length; r += 1) {
+      let sum = 0;
+      for (let j = 0; j < m1[0].length; j += 1) sum += m1[i][j] * m2[j][r];
+      res[i][r] = sum;
+    }
+  }
+  return res;
 }
 
 
